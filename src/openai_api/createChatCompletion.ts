@@ -29,7 +29,7 @@ export const createChatCompletion = ({
                 role: 'system',
                 content:
                     systemContent ||
-                    'translate user content into Japansese language',
+                    'translate user content into Japanese language',
             },
             { role: 'user', content: userContent },
         ],
