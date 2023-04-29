@@ -2,12 +2,12 @@ import { openAI } from './init'
 import fs from 'fs'
 
 export const createTranscription = ({
-    file,
+    readStream: file,
     prompt,
     temperature,
     language,
 }: {
-    file: fs.ReadStream
+    readStream: fs.ReadStream
     prompt?: string
     temperature?: number
     language?: string
@@ -16,7 +16,8 @@ export const createTranscription = ({
         // @ts-expect-error https://github.com/openai/openai-node/issues/77
         file,
         'whisper-1',
-        prompt,
+        prompt ||
+            'The output text language must be the same as the speech language',
         'json',
         temperature,
         language

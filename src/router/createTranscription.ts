@@ -7,7 +7,7 @@ import { users } from '~/firestore'
 import { updateDoc, getDoc, increment } from 'firelord'
 import formidable from 'formidable'
 import fs from 'fs'
-import { open } from 'node:fs/promises'
+import axios from 'axios'
 
 export const createTranscriptionRouter = s.router(contracts, {
     createTranscription: async ({ req }) => {
@@ -34,6 +34,9 @@ export const createTranscriptionRouter = s.router(contracts, {
                 },
             }
         }
+        // @ts-expect-error ts-rest improper typing
+        const fileName: string = data.audioFile.filepath
+        const newFileName = fileName + '.webm'
         try {
             const uid = decodedToken.uid
             const docRef = users.doc(uid)
@@ -46,17 +49,13 @@ export const createTranscriptionRouter = s.router(contracts, {
                     },
                 }
             }
-            // @ts-expect-error ts-rest improper typing
-            const fileName: string = data.audioFile.filepath
-            const newFileName = fileName + '.webm'
             fs.rename(fileName, newFileName, (e) => {
                 e && console.log(e)
             })
             const stream = fs.createReadStream(newFileName)
 
             const transcriptionResponse = await createTranscription({
-                file: stream,
-                prompt: 'translate to japaneses language',
+                readStream: stream,
             })
             const userContent = transcriptionResponse.data.text
 
@@ -66,10 +65,12 @@ export const createTranscriptionRouter = s.router(contracts, {
             })
             const chatData = translatedTextResponse.data
             const tokenUsage = chatData.usage?.completion_tokens
-            if (!tokenUsage) {
+
+            if (!tokenUsage || docData.freeToken - tokenUsage < 0) {
                 return {
                     status: 500,
                     body: {
+                        tokenUsage: 0,
                         message: 'token usage is unavailable',
                     },
                 }
@@ -95,9 +96,28 @@ export const createTranscriptionRouter = s.router(contracts, {
                     },
                 }
             }
+            const query = await axios
+                .post(
+                    `http://127.0.0.1:50021/audio_query?speaker=1&text=${translatedText}`
+                )
+                .then((res) => res.data)
+
+            const wavBuffer = await axios
+                .post(`http://127.0.0.1:50021/synthesis?speaker=1`, query, {
+                    responseType: 'arraybuffer',
+                })
+                .then((res) => res.data as ArrayBuffer)
+
+            const base64Wav = Buffer.from(wavBuffer).toString('base64')
+
             return {
                 status: 200,
-                body: { tokenUsage, translatedText },
+                body: {
+                    tokenUsage,
+                    translatedText,
+                    transcription: userContent,
+                    base64Wav,
+                },
             }
         } catch (e) {
             console.log({ e })
@@ -107,6 +127,8 @@ export const createTranscriptionRouter = s.router(contracts, {
                     message: 'unknown error',
                 },
             }
+        } finally {
+            fs.unlinkSync(newFileName)
         }
     },
 })
