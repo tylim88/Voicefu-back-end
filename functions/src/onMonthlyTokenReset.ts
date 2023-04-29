@@ -4,7 +4,7 @@ import { getDocs, updateDoc } from 'firelord'
 
 export const onMonthlyTokenRest = pubsub
     .schedule('0 0 1 * *')
-    .timeZone('America/New_York')
+    .timeZone('Africa/Abidjan')
     .onRun(async () => {
         try {
             const snapshots = await getDocs(users.collection())
