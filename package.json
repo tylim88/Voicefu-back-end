@@ -9,7 +9,8 @@
         "pretty": "pretty-quick --stage --brach main",
         "tsc": "rm -rf dist && tsc -b && tsc-alias -p tsconfig.json",
         "divider1": "============================dev========================================",
-        "dev": "(docker run --rm -p 127.0.0.1:50021:50021 voicevox/voicevox_engine:cpu-ubuntu20.04-latest || true) && rm -rf dist && cp -fr dev.env.json env.json && nodemon",
+        "docker": "docker run --rm -p 127.0.0.1:50021:50021 voicevox/voicevox_engine:cpu-ubuntu20.04-latest || true",
+        "dev": "rm -rf dist && cp -fr dev.env.json env.json && nodemon",
         "d-deploy-f": "rm -rf functions/lib && cp -fr dev.env.json env.json && npm run build --prefix functions && npm run deploy --prefix functions"
     },
     "lint-staged": {
