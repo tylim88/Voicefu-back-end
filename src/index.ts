@@ -6,14 +6,16 @@ import https from 'https'
 import env from '../env.json'
 import fs from 'fs'
 import http from 'http'
+import express from 'express'
 
 createExpressEndpoints(contracts, createTranscriptionRouter, app)
 
 const port = env.port
 
-// https://adamtheautomator.com/https-nodejs/
+// https://itnext.io/node-express-letsencrypt-generate-a-free-ssl-certificate-and-run-an-https-server-in-5-minutes-a730fbe528ca
 
 if (env.production) {
+    app.use(express.static(__dirname, { dotfiles: 'allow' }))
     https
         .createServer(
             {
@@ -30,7 +32,3 @@ if (env.production) {
         console.info(`(http)Listening at port ${port}`)
     })
 }
-
-// app.listen(port, () => {
-//     console.log(`Listening at http://localhost:${port}`)
-// })
