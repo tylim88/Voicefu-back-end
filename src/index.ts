@@ -5,21 +5,32 @@ import { createTranscriptionRouter } from './router'
 import https from 'https'
 import env from '../env.json'
 import fs from 'fs'
+import http from 'http'
 
 createExpressEndpoints(contracts, createTranscriptionRouter, app)
 
-const options: { key?: Buffer; cert?: Buffer } = {}
+const port = env.port
 
 // https://adamtheautomator.com/https-nodejs/
-try {
-    options.key = fs.readFileSync('../key.pem')
-    options.cert = fs.readFileSync('../cert.pem')
-} catch (e) {
-    if (env.production) {
-        throw Error('ssl cert or key not found')
-    }
+
+if (env.production) {
+    https
+        .createServer(
+            {
+                key: fs.readFileSync('../key.pem'),
+                cert: fs.readFileSync('../cert.pem'),
+            },
+            app
+        )
+        .listen(port, () => {
+            console.info(`(https)Listening at port ${port}`)
+        })
+} else {
+    http.createServer(app).listen(port, () => {
+        console.info(`(http)Listening at port ${port}`)
+    })
 }
-const port = env.port
-https.createServer(options, app).listen(port, () => {
-    console.info(`Listening at port ${port}`)
-})
+
+// app.listen(port, () => {
+//     console.log(`Listening at http://localhost:${port}`)
+// })
