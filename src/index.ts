@@ -8,12 +8,11 @@ import http from 'http'
 const greenlock = require('greenlock-express')
 
 createExpressEndpoints(contracts, createTranscriptionRouter, app)
-
 if (env.production) {
     greenlock
         .init({
-            packageRoot: __dirname,
-            configDir: '../greenlock',
+            packageRoot: process.cwd(),
+            configDir: './greenlock',
 
             // contact for security and critical bug notices
             maintainerEmail: env.email,
