@@ -12,6 +12,9 @@ Techs:
 
 [front end code](https://github.com/tylim88/Voicefu)
 
+Responsive design, works on phone
+
+<img src="https://raw.githubusercontent.com/tylim88/Voicefu/main/phone.jpg" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
 ## Development Mode
 
 1. This project use Firebase Firestore, please enable it in Firebase Console
