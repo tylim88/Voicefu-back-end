@@ -1,20 +1,7 @@
 # Voice Synthesis
 
-https://user-images.githubusercontent.com/5227509/235647791-63df3845-fd5e-4f77-a106-149d26622e90.mp4
+[front end code and intro](https://github.com/tylim88/Voicefu)
 
-This web application translates speech into Japanese speech, try it at [voicefu.com](https://voicefu.com/)
-
-Techs:
-
-1. Speech to text: [Whisper](https://platform.openai.com/docs/guides/speech-to-text)
-2. Translation: [GPT](https://platform.openai.com/docs/guides/chat)
-3. Japanese Voice Synthesis: [Voicevox](https://github.com/VOICEVOX/voicevox_engine)
-
-[front end code](https://github.com/tylim88/Voicefu)
-
-Responsive design, works on phone
-
-<img src="https://raw.githubusercontent.com/tylim88/Voicefu/main/phone.jpg" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
 ## Development Mode
 
 1. This project use Firebase Firestore, please enable it in Firebase Console
