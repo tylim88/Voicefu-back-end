@@ -1,13 +1,17 @@
 import { contracts } from './contracts'
-import { app } from './server'
+import { app, s } from './server'
 import { createExpressEndpoints } from '@ts-rest/express'
-import { createTranscriptionRouter } from './router'
+import { createTranscription, getMovies } from './router'
 import env from '../env.json'
 import http from 'http'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const greenlock = require('greenlock-express')
+import greenlock from 'greenlock-express'
 
-createExpressEndpoints(contracts, createTranscriptionRouter, app)
+const router = s.router(contracts, {
+    createTranscription,
+    getMovies,
+})
+
+createExpressEndpoints(contracts, router, app)
 if (env.production) {
     greenlock
         .init({
